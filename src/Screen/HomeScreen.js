@@ -47,11 +47,11 @@ const HomeScreen = props => {
       .delete(urlString)
       .then(res => {
         console.log(res);
-        dispatch(fetchData());
         showToast('Contact Deleted');
       })
       .catch(err => {
         console.log(err);
+        dispatch(fetchData());
         showToast('Failed To Delete Contact');
       });
   };
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   loadingIndicator: {
     position: 'absolute',
-    top: 100,
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
@@ -204,8 +204,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
+    marginVertical: 10,
   },
   greyLine: {
     width: '100%',

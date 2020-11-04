@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   ToastAndroid,
+  ScrollView,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import axios from 'axios';
@@ -33,6 +34,7 @@ const NewContactScreen = props => {
     setIsLoading(true);
     if (firstName.trim() === '' && lastName.trim() === '' && age === 0) {
       Alert.alert('Please Fill The Form Properly');
+      setIsLoading(false);
     } else {
       if (selectedImage === null) {
         axios
@@ -95,11 +97,11 @@ const NewContactScreen = props => {
   };
 
   return (
-    <View style={StyleSheet.container}>
+    <ScrollView style={styles.container}>
       {isLoading && (
         <ActivityIndicator
           color="#F8B195"
-          style={styles.loading}
+          style={styles.loadingIndicator}
           size={'large'}
         />
       )}
@@ -177,7 +179,8 @@ const NewContactScreen = props => {
           <Text style={styles.buttonText}>Save</Text>
         </TouchableOpacity>
       </View>
-    </View>
+      <View style={{height: 50}} />
+    </ScrollView>
   );
 };
 
@@ -186,9 +189,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFF',
   },
-  loading: {
+  loadingIndicator: {
     position: 'absolute',
-    top: 100,
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
@@ -198,8 +201,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
+    marginVertical: 10,
   },
   greyLine: {
     width: '100%',

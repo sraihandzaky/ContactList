@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   ActivityIndicator,
   ToastAndroid,
+  ScrollView,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
@@ -135,10 +136,7 @@ const ProfileScreen = props => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior="position"
-      keyboardVerticalOffset={keyboardVerticalOffset}>
+    <ScrollView style={styles.container}>
       {isUpdating && (
         <ActivityIndicator
           color="#F8B195"
@@ -295,7 +293,8 @@ const ProfileScreen = props => {
           )}
         </View>
       </View>
-    </KeyboardAvoidingView>
+      <View style={{height: 100}} />
+    </ScrollView>
   );
 };
 
@@ -306,7 +305,7 @@ const styles = StyleSheet.create({
   },
   loadingIndicator: {
     position: 'absolute',
-    top: 100,
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
@@ -316,8 +315,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
+    marginVertical: 10,
   },
   contentHeader: {
     alignItems: 'center',
