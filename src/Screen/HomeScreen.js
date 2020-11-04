@@ -9,6 +9,7 @@ import {
   Dimensions,
   Animated,
   ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view';
@@ -26,17 +27,20 @@ Array(100)
     rowTranslateAnimatedValues[`${i}`] = new Animated.Value(1);
   });
 
-const screenWidth = Math.round(Dimensions.get('window').width);
-const screenHeight = Math.round(Dimensions.get('window').height);
-
 const HomeScreen = props => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [counter, setCounter] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const initialData = useSelector(state => state.contactList);
   const dispatch = useDispatch();
 
+  setTimeout(() => {
+    setIsLoading(false);
+  }, 1500);
+
+  //the delete api seems a bit buggy
   const deleteContact = userId => {
     let urlString = `https://simple-contact-crud.herokuapp.com/contact/${userId}`;
     axios
@@ -80,6 +84,8 @@ const HomeScreen = props => {
         const contactId = initialData.find(item => item.key === key).id;
         animationIsRunning = false;
         if (finished) {
+          //this counter is needed because a bug
+          //in Animated.timing (finished called twice or more)
           setCounter(counter + 1);
           if (counter == 1) {
             deleteContact(contactId);
@@ -112,25 +118,10 @@ const HomeScreen = props => {
             marginLeft: 20,
           }}>
           {data.item.photo !== 'N/A' ? (
-            <Image
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-                resizeMode: 'cover',
-                marginRight: 10,
-              }}
-              source={{uri: data.item.photo}}
-            />
+            <Image style={styles.avatarImage} source={{uri: data.item.photo}} />
           ) : (
             <Image
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-                resizeMode: 'cover',
-                marginRight: 10,
-              }}
+              style={styles.avatarImage}
               source={require('./../../assets/profilePicture.png')}
             />
           )}
@@ -158,25 +149,22 @@ const HomeScreen = props => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator
+          color="#F8B195"
+          style={styles.loadingIndicator}
+          size={'large'}
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text
-        style={{
-          textAlign: 'center',
-          fontSize: 18,
-          fontWeight: 'bold',
-          marginTop: 20,
-          marginBottom: 10,
-        }}>
-        My Contact
-      </Text>
-      <View
-        style={{
-          width: '100%',
-          borderBottomColor: '#d5d5d5',
-          borderBottomWidth: 0.5,
-        }}
-      />
+      <Text style={styles.pageHeaderText}>My Contact</Text>
+      <View style={styles.greyLine} />
       <SwipeListView
         disableRightSwipe
         data={initialData}
@@ -192,21 +180,7 @@ const HomeScreen = props => {
 
       <TouchableOpacity
         onPress={() => props.navigation.navigate('NewContactScreen')}
-        style={{
-          position: 'absolute',
-          backgroundColor: '#F8B195',
-          width: 60,
-          height: 60,
-          borderRadius: 30,
-          justifyContent: 'center',
-          alignItems: 'center',
-          bottom: 20,
-          right: 30,
-          shadowOffset: {width: 10, height: 10},
-          shadowColor: 'black',
-          shadowOpacity: 1.0,
-          elevation: 5,
-        }}>
+        style={styles.floatingActionButton}>
         <Icon name="add-outline" size={30} color={'#FFF'} />
       </TouchableOpacity>
     </View>
@@ -217,6 +191,26 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     flex: 1,
+  },
+  loadingIndicator: {
+    position: 'absolute',
+    top: 100,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 9,
+  },
+  pageHeaderText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  greyLine: {
+    width: '100%',
+    borderBottomColor: '#d5d5d5',
+    borderBottomWidth: 0.5,
   },
   backTextWhite: {
     color: '#FFF',
@@ -247,6 +241,28 @@ const styles = StyleSheet.create({
   backRightBtnRight: {
     backgroundColor: '#8A0303',
     right: 0,
+  },
+  avatarImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    resizeMode: 'cover',
+    marginRight: 10,
+  },
+  floatingActionButton: {
+    position: 'absolute',
+    backgroundColor: '#F8B195',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 20,
+    right: 30,
+    shadowOffset: {width: 10, height: 10},
+    shadowColor: 'black',
+    shadowOpacity: 1.0,
+    elevation: 5,
   },
 });
 

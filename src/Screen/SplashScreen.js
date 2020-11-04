@@ -1,10 +1,13 @@
 import React from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Image} from 'react-native';
+import {View, StyleSheet, Text, Image} from 'react-native';
 
 const SplashScreen = props => {
   return (
     <View style={styles.container}>
-      <Text>Splash Screen</Text>
+      <Image
+        style={styles.image}
+        source={require('./../../assets/appIcon.png')}
+      />
     </View>
   );
 };
@@ -15,6 +18,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#F8B195',
+  },
+  image: {
+    width: 350,
+    height: 350,
+    marginTop: -100,
   },
 });
 
